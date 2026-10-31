@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.gripstyle.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.gripstyle.admin"
+        minSdk 26
+        targetSdk 34
+        // Each GitHub build gets a higher number, so a new APK installs over the old one
+        versionCode (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+        versionName "1.0"
+
+        resValue "string", "app_name", "GripStyle-Admin"
+        resValue "color", "icon_bg", "#111B21"
+        buildConfigField "String", "START_URL", "\"https://gripstylepos.netlify.app/adminwp\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    // Same key on every build, so updates install over the old app and the login is NOT lost.
+    signingConfigs {
+        release {
+            storeFile file("../gripstyle.keystore")
+            storePassword "gripstyle123"
+            keyAlias "gripstyle"
+            keyPassword "gripstyle123"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
